@@ -1,0 +1,21 @@
+# Requirements for local inference only
+# For training, use requirements.txt instead
+
+# Core TensorFlow (same version as training)
+tensorflow-macos>=2.15.0
+tensorflow-metal>=1.1.0
+
+# For loading the label encoder
+joblib>=1.3.0
+
+# NumPy is included with TensorFlow, but listed for clarity
+numpy>=1.24.0
+
+# Note: You don't need these for inference:
+# - pandas (only needed for loading datasets)
+# - scikit-learn (only needed for train_test_split, LabelEncoder - but we save the encoder)
+# - huggingface-hub (only needed for loading datasets)
+# - pyarrow (only needed for parquet files)
+# - flask (only needed for API hosting)
+# - flask-cors (only needed for API hosting)
+
