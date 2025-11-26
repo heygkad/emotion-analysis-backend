@@ -1,0 +1,15 @@
+# Requirements for local development on macOS with Metal GPU support
+# IMPORTANT: 
+# 1. Python 3.9-3.11 ONLY (NOT 3.12 or 3.13!)
+# 2. Install tensorflow-macos FIRST, then tensorflow-metal
+# 3. For M4 Macs, use the latest versions:
+tensorflow-macos>=2.15.0
+tensorflow-metal>=1.1.0
+
+# Other dependencies
+pandas>=2.0.0
+scikit-learn>=1.3.0
+numpy>=1.24.0
+huggingface-hub>=0.20.0
+pyarrow>=14.0.0
+
