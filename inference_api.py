@@ -9,8 +9,18 @@ from openai import OpenAI
 app = Flask(__name__)
 CORS(app)  # Enable CORS for browser access
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# Don't initialize OpenAI client here - do it lazily when needed
+client = None
+
+def get_openai_client():
+    """Lazy initialization of OpenAI client"""
+    global client
+    if client is None:
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY environment variable is not set")
+        client = OpenAI(api_key=api_key)
+    return client
 
 # Load models at startup
 print("Loading models...")
@@ -58,6 +68,11 @@ COACH_PROMPTS = {
 
 def get_llm_response(user_text, emotion, coach_type):
     """Get LLM response based on emotion classification"""
+    try:
+        openai_client = get_openai_client()
+    except ValueError as e:
+        return f"I'm here to help, but the OpenAI API key is not configured. Please contact support. ({str(e)})"
+    
     system_prompt = COACH_PROMPTS.get(coach_type, COACH_PROMPTS['empathy-focused supporter'])
     
     user_prompt = f"""The user shared: "{user_text}"
@@ -73,7 +88,7 @@ Please respond as a {coach_type}. Provide a helpful, supportive response that:
 Response:"""
     
     try:
-        response = client.chat.completions.create(
+        response = openai_client.chat.completions.create(
             model="gpt-4o-mini",  # or "gpt-3.5-turbo" for cheaper option
             messages=[
                 {"role": "system", "content": system_prompt},
