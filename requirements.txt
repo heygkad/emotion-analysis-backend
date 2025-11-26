@@ -2,8 +2,9 @@
 # Standard TensorFlow (not macOS-specific)
 tensorflow>=2.15.0
 
-# For loading the label encoder
+# For loading the label encoder (requires scikit-learn to unpickle)
 joblib>=1.3.0
+scikit-learn>=1.3.0
 
 # NumPy
 numpy>=1.24.0
