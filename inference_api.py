@@ -8,8 +8,15 @@ app = Flask(__name__)
 
 # Load models at startup
 print("Loading models...")
-vectorizer = tf.keras.models.load_model("vectorizer.keras")
 model = tf.keras.models.load_model("emotion_model.keras")
+
+# Load vectorizer and extract the TextVectorization layer
+print("Loading vectorizer...")
+vectorizer_model = tf.keras.models.load_model("vectorizer.keras")
+vectorizer = vectorizer_model.layers[0]  # Extract TextVectorization layer
+print("Vectorizer loaded successfully!")
+
+# Load label encoder
 le = joblib.load("label_encoder.pkl")
 print("Models loaded successfully!")
 
@@ -24,7 +31,12 @@ def predict():
             return jsonify({"error": "Missing 'text' field in request"}), 400
         
         text = request.json["text"]
-        vec = vectorizer([text])
+        # Ensure text is a list (required by the vectorizer)
+        if isinstance(text, str):
+            text = [text]
+        
+        # Vectorize the text
+        vec = vectorizer(text)
         probs = model.predict(vec, verbose=0)[0]
         idx = np.argmax(probs)
         label = le.inverse_transform([idx])[0]
